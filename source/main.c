@@ -7,70 +7,45 @@
 #include <libgpu.h>
 #include <stdio.h>
 #include <types.h>
+#include <libapi.h>
 
 #include "dcMath.h"
-#include "dcCamera.h"
 #include "dcRender.h"
 #include "dcMemory.h"
-#include "dcMisc.h"
-#include "dcCollision.h"
 
-#define CUBESIZE 196 
+#define TLOAD_ADDR 0x80100000;
 
-static SDC_Vertex cube_vertices[] = {
-    { {-CUBESIZE / 2, -CUBESIZE / 2, -CUBESIZE / 2, 0} }, { {CUBESIZE / 2, -CUBESIZE / 2, -CUBESIZE / 2, 0} },
-    { {CUBESIZE / 2, CUBESIZE / 2, -CUBESIZE / 2, 0  } }, { {-CUBESIZE / 2, CUBESIZE / 2, -CUBESIZE / 2, 0  } },
-    { {-CUBESIZE / 2, -CUBESIZE / 2, CUBESIZE / 2, 0 } }, { {CUBESIZE / 2, -CUBESIZE / 2, CUBESIZE / 2, 0   } },
-    { {CUBESIZE / 2, CUBESIZE / 2, CUBESIZE / 2, 0   } }, { {-CUBESIZE / 2, CUBESIZE / 2, CUBESIZE / 2, 0   } },
-};
+char* jamApps[] = { "cdrom:\\TANKE.EXE;1","cdrom:\\ROGUE.EXE;1","cdrom:\\BARCO.EXE;1", "cdrom:\\MALETA.EXE;1" };
+char padding[3];
+long appLoadAddress[4];
+struct EXEC execs[4];
+int numApps = 4;
 
-static u_short cube_indices[] = {
-    0, 2, 1, 2, 0, 3,  1, 6, 5, 6, 1, 2,  5, 7, 4, 7, 5, 6,  4, 3, 0, 3, 4, 7,  4, 1, 5, 1, 4, 0,  6, 3, 7, 3, 6, 2,
-};
-
-static SDC_Mesh3D cubeMesh = { cube_vertices, cube_indices, NULL, 36, 8, POLIGON_VERTEX };
 
 int main(void) 
 {
+restart: 
     dcMemory_Init();
     PadInit(0);
-    InitGeom();
-
-    SDC_Mesh3D* sphereMesh = dcMisc_generateSphereMesh(CUBESIZE, 7, 7);
+    _96_init();
 
     SDC_Render render;
-    SDC_Camera camera;
-    long distance = 800;
     int  width = 640;
     int  height = 240;
-
     CVECTOR bgColor = {60, 120, 120};
     dcRender_Init(&render, width, height, bgColor, 4096, 8192, RENDER_MODE_PAL);
-    dcCamera_SetScreenResolution(&camera, width, height);
-    dcCamera_SetCameraPosition(&camera, 0, 0, distance);
-    dcCamera_LookAt(&camera, &VECTOR_ZERO);
 
-    SVECTOR rotation = {0};
-    VECTOR translation = {0, 0, 0, 0};
-    MATRIX transform;
+    int selectedApp = 0;
+    int prevPadUp = 0;
+    int prevPadDown = 0;
+    int prevXDown = 0;
 
-    SDC_DrawParams drawParams = {
-        .tim = NULL,
-        .constantColor = {255, 255, 255},
-        .bLighting = 1,
-        .bUseConstantColor = 1
-    };
 
-    CVECTOR ambientColor = {0, 0, 0};
-    dcRender_SetAmbientColor(&render, &ambientColor );
-
-    SVECTOR lightDir = {DC_ONE, 0, 0 };
-    SVECTOR lightColor = {DC_ONE, 0, 0};
-    dcRender_SetLight(&render, 0, &lightDir, &lightColor);
-
-    SVECTOR lightDir1 = {0, -DC_ONE, 0 };
-    SVECTOR lightColor1 = {0, DC_ONE, 0};
-    dcRender_SetLight(&render, 1, &lightDir1, &lightColor1);
+    for(int i = 0; i < numApps; i++)
+    {
+        appLoadAddress[i] = LoadTest(jamApps[i], &execs[i]);
+    }
+    
 
     while (1) {
 
@@ -79,43 +54,59 @@ int main(void)
 
         if( _PAD(0,PADLup ) & padState )
         {
-            translation.vy -= 32;
+            if( !prevPadUp)
+            {
+                selectedApp = DC_MAX( selectedApp - 1, 0);
+                prevPadUp = 1;
+            }
         }
+        else prevPadUp = 0;
+
         if( _PAD(0,PADLdown ) & padState )
         {
-            translation.vy += 32;
+            if(!prevPadDown)
+            {
+                selectedApp = DC_MIN( selectedApp + 1, numApps - 1);
+                prevPadDown = 1;
+            }
         }
-        if( _PAD(0,PADLright ) & padState )
-        {
-            translation.vx -= 32;
-        }
-        if( _PAD(0,PADLleft ) & padState )
-        {
-            translation.vx += 32;
-        }
+        else prevPadDown = 0;
 
-        rotation.vy += 16;
-
-        RotMatrix(&rotation, &transform);
-        TransMatrix(&transform, &translation);
-        dcCamera_ApplyCameraTransform(&camera, &transform, &transform);
-
-        FntPrint("GameDev Challenge Sphere Demo\n");
-
-        SVECTOR rayDir = { camera.viewMatrix.m[2][0], camera.viewMatrix.m[2][1], camera.viewMatrix.m[2][2] };
-        VectorNormalSS(&rayDir, &rayDir);
-        if( dcCollision_RaySphereInteresct(&camera.position, &rayDir, &translation, CUBESIZE ) > 0 )
+        if( _PAD(0,PADRdown ) & padState )
         {
-            drawParams.bUseConstantColor = 1;
-            drawParams.bLighting = 1;
-            dcRender_DrawMesh(&render, sphereMesh, &transform, &drawParams);
+            if( !prevXDown )
+            {
+                prevXDown = 1;
+
+                struct EXEC exec;
+                if(Load(jamApps[selectedApp], &exec))
+                {
+                    printf("Loaded %s successfully!\n", jamApps[selectedApp]);
+                    ResetGraph(3);
+                    PadStop();
+	                StopCallback();
+                    EnterCriticalSection();
+                    Exec(&exec, 0, 0);
+                }
+                else printf("Failed to load %s!\n", jamApps[selectedApp]);
+            }            
+
         }
-        else
-        {
-            drawParams.bUseConstantColor = 1;
-            drawParams.bLighting = 0;
-            dcRender_DrawMesh(&render, &cubeMesh, &transform, &drawParams );
-        }
+        else prevXDown = 0;
+
+        FntPrint(
+            "GameDev Challenge 2023 Launcher\n"
+            "Selected app: %s\nLoad @ %08x\n"
+            ".text @0x%08x %d bytes\n"
+            ".data @0x%08x %d bytes\n"
+            ".bss @0x%08x %d bytes\n"
+            ".stack @0x%08x %d bytes\n"
+            , jamApps[selectedApp], appLoadAddress[selectedApp], 
+            execs[selectedApp].t_addr, execs[selectedApp].t_size,
+            execs[selectedApp].d_addr, execs[selectedApp].d_size,
+            execs[selectedApp].b_addr, execs[selectedApp].b_size,
+            execs[selectedApp].s_addr, execs[selectedApp].s_size
+        );
 
         dcRender_SwapBuffers(&render);
     }

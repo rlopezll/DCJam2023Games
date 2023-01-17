@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "MAIN.C": "cpp",
+        "dcinput.h": "c",
+        "exit_p1.h": "c",
+        "scanner_p1.h": "c",
+        "scanner_p2.h": "c",
+        "game_ground.h": "c"
+    }
+}

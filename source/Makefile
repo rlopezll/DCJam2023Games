@@ -40,4 +40,6 @@ LDFLAGS += -lspu
 LDFLAGS += -ltap
 LDFLAGS += -Wl,--end-group
 
+LDSCRIPT = demoLoader.ld
+
 include ../third_party/common.mk

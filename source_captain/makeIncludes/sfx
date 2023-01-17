@@ -1,0 +1,4 @@
+AUDIO_LIST = \
+./assets/audio/hit.vag \
+./assets/audio/wallhit.vag \
+./assets/audio/jump.vag

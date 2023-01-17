@@ -1,0 +1,17 @@
+TEXTURES_LIST = \
+tileset.tim \
+./assets/textures/sky_psx.tim\
+./assets/textures/waterTilesetFinal.tim \
+./assets/textures/texturaEpica.tim \
+./assets/textures/T_Vapor_hull.tim \
+./assets/textures/capitan.tim\
+./assets/textures/fill_life.tim \
+./assets/textures/empty_life.tim \
+./assets/textures/damage.tim\
+./assets/textures/gameover.tim\
+./assets/textures/speed.tim\
+./assets/textures/casaTexture.tim\
+./assets/textures/main_title.tim\
+./assets/textures/novarama1.tim\
+./assets/textures/gameover_capitan.tim
+

@@ -1,0 +1,140 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make",
+            "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "make -j8",
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "label": "make_clean",
+            "type": "shell",
+            "group": "build",
+            "command": "make clean",
+            "problemMatcher": []
+        },
+        {
+            "label": "make_openbios",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/openbios all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/openbios all"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make_openbios_clean",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/openbios clean all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/openbios clean all"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make_mipstests",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/tests all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/tests all"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make_mipstests_clean",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/tests clean all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/tests clean all"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make_cpe_helloworld",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/helloworld all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/helloworld all"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make_shell",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/shell all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/shell all"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make_cube",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/cube all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/cube all"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make_cube_clean",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/cube clean all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/cube clean all"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make_modplay_demo",
+            "type": "shell",
+            "group": "build",
+            "command": "${workspaceRoot}/dockermake.sh -C src/mips/modplayer all",
+            "windows": {
+                "command": "${workspaceRoot}\\dockermake.bat -C src/mips/modplayer all"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+    ]
+}

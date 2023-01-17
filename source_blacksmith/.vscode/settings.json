@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "MAIN.C": "cpp",
+        "engine.h": "c",
+        "render.h": "c",
+        "dcmisc.h": "c",
+        "gameovergamestate.h": "c",
+        "dcmath.h": "c",
+        "dccamera.h": "c",
+        "enemymanager.h": "c",
+        "spritetestgamestate.h": "c",
+        "rendermeshes.h": "c",
+        "player.h": "c",
+        "dcfont.h": "c",
+        "scene.h": "c",
+        "gameloopgamestate.h": "c",
+        "dcaudio.h": "c"
+    }
+}
