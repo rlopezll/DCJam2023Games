@@ -24,7 +24,6 @@ int numApps = 4;
 
 int main(void) 
 {
-restart: 
     dcMemory_Init();
     PadInit(0);
     _96_init();
