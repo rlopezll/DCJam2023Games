@@ -5,10 +5,10 @@ DCJam2023Games is a repo that puts together all the games that participated in t
 
 Here you have the original repos of the games:
 
-*[Captain Rubens Seaboat Adventure](https://github.com/quimromo/TODOPSXGAME)
-*[Blacksmith-Survivors](https://github.com/EspetecDev/Blacksmith-Survivors)
-*[AnderTanker](https://github.com/mizquierdo97/AnderTanker)
-*[D.E.S.C.O.N.T.R.O.L.](https://github.com/Viladoman/JamPSX)
+* [Captain Rubens Seaboat Adventure](https://github.com/quimromo/TODOPSXGAME)
+* [Blacksmith-Survivors](https://github.com/EspetecDev/Blacksmith-Survivors)
+* [AnderTanker](https://github.com/mizquierdo97/AnderTanker)
+* [D.E.S.C.O.N.T.R.O.L.](https://github.com/Viladoman/JamPSX)
 
 Here other interesting repositories:
 
