@@ -4,7 +4,7 @@
 DCJam2023Games is a repo that puts together all the games that participated in the GameJam: GameDev Challenge 2023 in the same build.
 
 Here you have the original repos of the games:
-(please use these repos to get the original source of the games)
+<br/>(please use these repos to get the original source of the games)
 
 * [Captain Rubens Seaboat Adventure](https://github.com/quimromo/TODOPSXGAME)
 * [Blacksmith-Survivors](https://github.com/EspetecDev/Blacksmith-Survivors)
