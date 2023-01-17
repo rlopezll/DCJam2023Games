@@ -12,8 +12,8 @@ Here you have the original repos of the games:
 
 Here other interesting repositories:
 
-[PsxJamBootstrap](https://github.com/rlopezll/PsxJamBootstrap)
-Bootstrap to PSX for GameJam: GameDev Challenge 2023
+* [PsxJamBootstrap](https://github.com/rlopezll/PsxJamBootstrap)
+  Bootstrap to PSX for GameJam: GameDev Challenge 2023
 
 ## Setup
 
