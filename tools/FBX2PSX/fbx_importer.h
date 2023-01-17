@@ -28,6 +28,7 @@ struct TImportParams {
   EVertexFormatOutput m_vertexFormatOutput = EVertexFormatOutput::VERTEX;
   int         m_flipUVFlags = (int)EFlipUVFlag::VERTICAL_FLIP;
 	FbxAMatrix  m_matrix;
+  bool        m_displayNodes;
 
   std::string getRelativeFolder(const std::string &folder) const;
   std::string getAbsoluteFolder(const std::string &folder) const;

@@ -2,6 +2,7 @@
 #include "fbx_parser.h"
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 #include <cassert>
 #include <algorithm>
@@ -154,6 +155,14 @@ struct TImporter {
       return &m_meshes.back();
     return nullptr;
   }
+
+	TMesh* getMeshByName(const std::string& name) {
+		for (auto& mesh : m_meshes) {
+			if(mesh.name == name)
+				return &mesh;
+		}
+		return nullptr;
+	}
 };
 
 void setNumVertices(TImporterContext *context, int nvertices) {
@@ -606,11 +615,69 @@ bool importMeshFromFBX(const char *filename, const TImportParams &params) {
 	context.inter->getVertexIndex = &getVertexIndex;
   context.user_data =(void *)(&fbx);
   ResultParserFBX res = parserFBX(filename, &context);
+	if (params.m_displayNodes) {
+		/*
+		VECTOR gNodesA[] = { 
+    {-957,81,-390},
+    {-402,81,-390},
+    {-27,81,-390},
+    {-27,81,-211},
+    {-166,81,-169},
+    {-166,81,192},
+    {124,81,212},
+    {167,81,394},
+    {678,81,394},
+    {934,81,394}
+		};
+		*/
+		std::set<std::string> nodesA;
+		std::set<std::string> nodesB;
+		for (auto& curr_mesh : fbx.m_meshes) {
+			if (curr_mesh.name.find("_NodeA") != std::string::npos) {
+				nodesA.insert(curr_mesh.name);
+			}
+			else if (curr_mesh.name.find("_NodeB") != std::string::npos) {
+				nodesB.insert(curr_mesh.name);
+			}
+		}
+		printf("VECTOR gNodesA[] = {\n");
+		int idx = 0;
+		for (auto& curr_name : nodesA) {
+			auto mesh = fbx.getMeshByName(curr_name);
+			assert(mesh);
+			FbxVector4 loc = mesh->fbxMtx.GetT();
+			printf("{%d, %d, %d}", (int)loc.mData[0], (int)loc.mData[1], (int)loc.mData[2]);
+			++idx;
+			if (idx < nodesA.size()) {
+				printf(",");
+			}
+			printf(" // %s \n", curr_name.c_str());
+		}
+		printf("};\n");
+
+		printf("VECTOR gNodesB[] = {\n");
+		idx = 0;
+		for (auto& curr_name : nodesB) {
+			auto mesh = fbx.getMeshByName(curr_name);
+			assert(mesh);
+			FbxVector4 loc = mesh->fbxMtx.GetT();
+			printf("{%d, %d, %d}", (int)loc.mData[0], (int)loc.mData[1], (int)loc.mData[2]);
+			++idx;
+			if (idx < nodesB.size()) {
+				printf(",");
+			}
+			printf(" // %s \n", curr_name.c_str());
+		}
+		printf("};\n");
+
+		return true;
+	}
   if (res == ResultParserFBX::OK) {
     doMeshes(filename, params, fbx);
   }
 	else if (res == ResultParserFBX::FBX_MUST_BE_TRIANGLES) {
 		printf("Error: ResultParserFBX = FBX Must Be Triangles");
 	}
+
   return res == ResultParserFBX::OK;
 }
