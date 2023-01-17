@@ -29,7 +29,7 @@ int main(void)
     _96_init();
 
     SDC_Render render;
-    int  width = 640;
+    int  width = 320;
     int  height = 240;
     CVECTOR bgColor = {60, 120, 120};
     dcRender_Init(&render, width, height, bgColor, 4096, 8192, RENDER_MODE_PAL);
