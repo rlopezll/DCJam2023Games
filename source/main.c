@@ -14,7 +14,7 @@
 #include "dcMemory.h"
 #include "dcFont.h"
 
-#define WITH_CD 1
+#define WITH_CD 0
 
 #ifndef WITH_CD
 #define WITH_CD 0
@@ -22,9 +22,6 @@
 
 extern unsigned long _binary_assets_bgCropped_tim_start[];
 SDC_TIM_IMAGE backgroundTim;
-
-extern unsigned long _binary_assets_tv_overlay_tim_start[];
-SDC_TIM_IMAGE tvOverlayTim;
 
 char* jamApps[] = { "cdrom:\\TANKE.EXE;1","cdrom:\\ROGUE.EXE;1","cdrom:\\BARCO.EXE;1", "cdrom:\\MALETA.EXE;1" };
 char* gameNames[] = 
@@ -47,6 +44,8 @@ void DrawCredits();
 
 void UpdateIntro();
 void DrawIntro();
+
+void InitCreditsLength();
 
 typedef enum
 {
@@ -89,7 +88,7 @@ void drawQuad(SDC_Render *render, SDC_TIM_IMAGE* tex, RECT* xywh, RECT* uvwh, in
 
 void drawBackground(SDC_Render *render)
 {
-    long otz = render->orderingTableCount - 1;
+    long otz = 1; //render->orderingTableCount - 1;
 
     short halfWidth = 160;
     short halfHeight = 120;
@@ -126,13 +125,14 @@ int main(void)
     
     int  width = 320;
     int  height = 240;
-    CVECTOR bgColor = {255, 0, 0};
+    CVECTOR bgColor = {14, 114, 120};
     
-    dcRender_Init(&render, width, height, bgColor, 64, 8192, RENDER_MODE_NTCS);
+    dcRender_Init(&render, width, height, bgColor, 64, 12000, RENDER_MODE_NTCS);
     dcRender_LoadTexture(&backgroundTim, _binary_assets_bgCropped_tim_start);
-    dcRender_LoadTexture(&tvOverlayTim, _binary_assets_tv_overlay_tim_start);
 
     dcFont_UseSystemFont();
+
+    InitCreditsLength();
 
     SetLoaderState(MENU);
 
@@ -166,11 +166,6 @@ int main(void)
                 DrawCredits();
                 break;
         }
-
-        // Draw tv overlay
-        RECT overlayQuad = {74, 70, 175, 98 };
-        RECT overlayUVs = {0, 0, 175, 98 };
-        drawQuad(&render, &tvOverlayTim, &overlayQuad, &overlayUVs, 1, 1 );
 
         dcRender_SwapBuffers(&render);
     }
@@ -229,6 +224,7 @@ void UpdateMenu()
                     StopCallback();
                     EnterCriticalSection();
                     Exec(&exec, 0, 0);
+                    ExitCriticalSection();
                 }
                 else printf("Failed to load %s!\n", jamApps[selectedApp]);
             #endif
@@ -249,16 +245,17 @@ void DrawMenu()
     for(int i = 0; i < numApps; ++i)
     {
         CVECTOR* color = i == selectedApp ? &selectedColor : &normalColor;
-        dcFont_PrintZ(&render,78, y, 2, color, gameNames[i]);
+        dcFont_PrintZ(&render,78, y, 16, color, gameNames[i]);
         y += 15;
     }
 
 }
 
-int creditsY = 190;
+int creditsY = 0;
 int creditTicks = 0;
 extern const char* creditsArray[];
 extern int numCreditsNames;
+extern int creditsLineLength[];
 
 void UpdateCredits()
 {
@@ -268,31 +265,59 @@ void UpdateCredits()
         creditsY--;
         creditTicks = 0;
     }
-    if( creditsY + 15 * numCreditsNames < 60 )
+    if( creditsY + 15 * numCreditsNames < 55 )
     {
         SetLoaderState(MENU);
     }
+    else if( _PAD(0,PADRdown ) & PadRead(0) )
+    {
+        if(!prevXDown)
+        {
+            SetLoaderState(MENU);
+        }
+        prevXDown = 1;
+    }
+    else prevXDown = 0;
 }
+
+RECT tvArea = {74, 70, 175, 98 };
 
 void DrawCredits()
 {
-    CVECTOR color = {127, 127, 127};
+    CVECTOR bgColor = {7, 57, 60};
+    CVECTOR textColor = {127, 127, 127};
+    CVECTOR color;
+
+
     int y = creditsY;
+
+    
+    DVECTOR characterSize;
+    dcFont_GetCharacterSize(&characterSize);
 
     for(int i = 0; i < numCreditsNames; ++i)
     {
-        if(y > 75 && y < 160)
-        {
-            dcFont_PrintZ(&render, 115, y, 2, &color, creditsArray[i]);
-        }
-        y += 15;
+        int textSize = creditsLineLength[i] * characterSize.vx;
+        int xOffset = (tvArea.w - textSize) >> 1;
+        long alpha = (DC_MIN( 50 - abs(DC_CLAMP( DC_MAX(y - 65, 0), 0, 100) - 50), 16 ) << 12) >> 4;
+        DC_LERP_COLOR( &bgColor, &textColor, alpha, &color );
+        dcFont_PrintZ(&render, tvArea.x + xOffset, y, 2, &color, creditsArray[i]);
+        y += 16;
     }
 
 }
+
+int ticksInIntro = 0;
+int maxTicksInIntro = 200;
 
 void UpdateIntro()
 {
 
+    ticksInIntro++;
+    if(ticksInIntro >= maxTicksInIntro)
+    {
+        SetLoaderState(MENU);
+    }
 }
 
 void DrawIntro()
@@ -306,8 +331,12 @@ void SetLoaderState(ELoaderState newState)
 
     if(state == CREDITS)
     {
-        creditsY = 190; 
+        creditsY = 150; 
         creditTicks = 0;
+    }
+    if(state == INTRO)
+    {
+        ticksInIntro = 0;
     }
 
 }

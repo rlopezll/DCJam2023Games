@@ -11,7 +11,6 @@ SRCS = main.c \
 		dcLibPsx/src/dcFont.c\
 		credits.c\
 		assets/bgCropped.tim\
-		assets/tv_overlay.tim\
 
 CPPFLAGS += -I../third_party/common
 CPPFLAGS += -I../third_party/psyq/include

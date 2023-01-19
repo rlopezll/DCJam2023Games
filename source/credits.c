@@ -1,6 +1,11 @@
 
-const char* creditsArray[] = 
+#include <string.h>
+
+const char *creditsArray[] =
 {
+    "GAMEDEV CHALLENGE\0",
+    "2023 PSX\0",
+    "\0",
     "ALBERT DEL ARCO\0",
     "ALEX XAMENA\0",
     "ANDER CELAYA\0",
@@ -22,4 +27,15 @@ const char* creditsArray[] =
     "RUBEN LOPEZ\0"
 };
 
+//char creditsPadding[2];
+
 int numCreditsNames = sizeof(creditsArray) / sizeof(char*);
+int creditsLineLength[sizeof(creditsArray) / sizeof(char*)];
+
+void InitCreditsLength()
+{
+    for( int i = 0; i < numCreditsNames; ++i)
+    {
+        creditsLineLength[i] = strlen(creditsArray[i]);
+    }
+}
