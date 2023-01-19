@@ -78,7 +78,6 @@ int main(int argc, char** argv)
 		printf("Help commands:\n");
 		printf("-fbx <input_fbx_filename>\n");
 		printf("-outdir <out_folder_h>\n");
-		printf("-vertex_format <out_folder_h>\n");
 		printf("-vertex_format <0/1/2/3/4/5/6> OPTIONAL default:0\n");
 		printf("    0: VERTEX\n");
 		printf("    1: VERTEX_COLOR\n");
@@ -92,8 +91,9 @@ int main(int argc, char** argv)
 		printf("-yaw     <value in degrees> OPTIONAL default:0\n");
 		printf("-pitch   <value in degrees> OPTIONAL default:0\n");
 		printf("-roll    <value in degrees> OPTIONAL default:0\n");
+		printf("-display_nodes\n");
 		printf("Example command line:\n");
-		printf("    FBX2PSX.exe -fbx teapod.fbx -outdir D:\\code\\psxdev\\jam\\PsxJamBootstrap\\source -invertY 1 -vertex_format 1");
+		printf("    FBX2PSX.exe -fbx teapod.fbx -outdir D:\\code\\psxdev\\jam\\PsxJamBootstrap\\source -vertex_format 1");
 		return 0;
 	}
 	TArgsParser args_parser;
@@ -149,6 +149,9 @@ int main(int argc, char** argv)
 	if (args_parser.GetFloatArg("-roll", roll)) {
 		roll = DEG2RAD(roll);
 	}
+	params.m_displayNodes = false;
+	args_parser.GetBoolArg("-display_nodes", params.m_displayNodes);
+
 	FbxAMatrix rotationMatrix, scaleMatrix;
 	rotationMatrix.SetROnly(FbxVector4(roll, pitch, yaw, 1.0f));
 	scaleMatrix.SetS(FbxVector4(scaleValue, scaleValue, scaleValue, 1.0f));
