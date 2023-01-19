@@ -13,6 +13,7 @@
 #include "dcRender.h"
 #include "dcMemory.h"
 #include "dcFont.h"
+#include "dcMisc.h"
 
 #define WITH_CD 0
 
@@ -134,7 +135,7 @@ int main(void)
 
     InitCreditsLength();
 
-    SetLoaderState(MENU);
+    SetLoaderState(INTRO);
 
     while (1) 
     {
@@ -288,10 +289,8 @@ void DrawCredits()
     CVECTOR textColor = {127, 127, 127};
     CVECTOR color;
 
-
     int y = creditsY;
 
-    
     DVECTOR characterSize;
     dcFont_GetCharacterSize(&characterSize);
 
@@ -308,7 +307,8 @@ void DrawCredits()
 }
 
 int ticksInIntro = 0;
-int maxTicksInIntro = 200;
+int maxTicksInIntro = 500;
+int maxTicksIntroAnimation = 200;
 
 void UpdateIntro()
 {
@@ -322,6 +322,60 @@ void UpdateIntro()
 
 void DrawIntro()
 {
+
+    CVECTOR textColor = {128, 92, 37};
+
+    DVECTOR characterSize;
+    dcFont_GetCharacterSize(&characterSize);
+
+    long yFinal = tvArea.y + ( tvArea.h >> 1 ) - characterSize.vy;
+
+    char text[] = {0, 0};
+    
+    // Chache some random values and reuse later instead of computing it for each character
+    long alphas[] = { 
+        dcMath_EaseOutBounce(( DC_MIN(ticksInIntro, maxTicksIntroAnimation + 50)  << 12 ) / (maxTicksIntroAnimation + 50)),
+        dcMath_EaseOutBounce(( DC_MIN(ticksInIntro, maxTicksIntroAnimation - 50)  << 12 ) / (maxTicksIntroAnimation - 50)),
+        dcMath_EaseOutBounce(( DC_MIN(ticksInIntro, maxTicksIntroAnimation + 25)  << 12 ) / (maxTicksIntroAnimation + 25)),
+        dcMath_EaseOutBounce(( DC_MIN(ticksInIntro, maxTicksIntroAnimation - 25)  << 12 ) / (maxTicksIntroAnimation - 25)),
+        dcMath_EaseOutBounce(( DC_MIN(ticksInIntro, maxTicksIntroAnimation + 13)  << 12 ) / (maxTicksIntroAnimation + 13)),
+        dcMath_EaseOutBounce(( DC_MIN(ticksInIntro, maxTicksIntroAnimation - 14)  << 12 ) / (maxTicksIntroAnimation - 14)),
+        dcMath_EaseOutBounce(( DC_MIN(ticksInIntro, maxTicksIntroAnimation)  << 12 ) / maxTicksIntroAnimation),
+        dcMath_EaseOutBounce(( DC_MIN(ticksInIntro, maxTicksIntroAnimation + 37)  << 12 ) / (maxTicksIntroAnimation + 37))
+    };
+    
+    for(int i = 0; i < 2; ++i)
+    {
+        int textSize = creditsLineLength[i] * characterSize.vx;
+        int xOffset = (tvArea.w - textSize) >> 1;
+
+
+        if(ticksInIntro < maxTicksIntroAnimation + 100 )
+        {
+            for(int charIdx = 0; charIdx < creditsLineLength[i]; ++ charIdx)
+            {
+                long randYOffset = 70 - ( abs(dcMisc_Noise(xOffset, i, charIdx)) >> 5 );
+                long randAlphaOffset = dcMisc_Noise( i, charIdx, xOffset );
+                int randIdx = (randYOffset ^ randAlphaOffset) & 0x07;
+
+                int randAlpha = alphas[randIdx] + DC_MAX(ticksInIntro - maxTicksIntroAnimation, 0);
+
+                long animatedY = DC_LERP(randYOffset, yFinal, randAlpha );
+                animatedY = DC_MIN(animatedY, yFinal);
+                
+                text[0] = creditsArray[i][charIdx];
+                dcFont_PrintZ(&render, tvArea.x + xOffset, animatedY, 2, &textColor, text);
+
+                xOffset += characterSize.vx;
+            }
+        }
+        else
+        {
+            dcFont_PrintZ(&render, tvArea.x + xOffset, yFinal, 2, &textColor, creditsArray[i]);
+        }
+
+        yFinal += 16;
+    }
     
 }
 

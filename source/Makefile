@@ -9,6 +9,7 @@ SRCS = main.c \
 		dcLibPsx/src/dcMath.c\
 		dcLibPsx/src/dcRender.c\
 		dcLibPsx/src/dcFont.c\
+		dcLibPsx/src/dcMisc.c\
 		credits.c\
 		assets/bgCropped.tim\
 
