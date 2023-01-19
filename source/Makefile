@@ -8,8 +8,10 @@ SRCS = main.c \
 		dcLibPsx/src/dcCamera.c\
 		dcLibPsx/src/dcMath.c\
 		dcLibPsx/src/dcRender.c\
-		dcLibPsx/src/dcCollision.c\
-		dcLibPsx/src/dcMisc.c\
+		dcLibPsx/src/dcFont.c\
+		credits.c\
+		assets/bgCropped.tim\
+		assets/tv_overlay.tim\
 
 CPPFLAGS += -I../third_party/common
 CPPFLAGS += -I../third_party/psyq/include
@@ -26,15 +28,11 @@ LDFLAGS += -letc
 LDFLAGS += -lgpu
 LDFLAGS += -lgs
 LDFLAGS += -lgte
-LDFLAGS += -lgpu
-LDFLAGS += -lgun
-LDFLAGS += -lhmd
 LDFLAGS += -lmath
 LDFLAGS += -lmcrd
 LDFLAGS += -lmcx
 LDFLAGS += -lpad
 LDFLAGS += -lpress
-LDFLAGS += -lsio
 LDFLAGS += -lsnd
 LDFLAGS += -lspu
 LDFLAGS += -ltap

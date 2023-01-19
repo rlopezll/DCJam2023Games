@@ -29,8 +29,8 @@ OUTPUT_FORMAT("binary")
 EXTERN(_start)
 ENTRY(_start)
 
-/* Load loader 128k below ram top so we have enough space for stack, loader and some heap for the loader*/
-TLOAD_ADDR = DEFINED(TLOAD_ADDR) ? TLOAD_ADDR : 0x801E0000;
+/* Load loader more than 128k below ram top so we have enough space for stack, loader and some heap for the loader*/
+TLOAD_ADDR = DEFINED(TLOAD_ADDR) ? TLOAD_ADDR : 0x801B0000;
 
 MEMORY {
     loader      : ORIGIN = (TLOAD_ADDR - 0x800), LENGTH = 2048
