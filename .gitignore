@@ -5,3 +5,5 @@ games/descontrol/cdrom/LICENSEE.DAT
 games/descontrol/cdrom/MAIN.EXE
 games/descontrol/cdrom/myimage.bin
 games/descontrol/cdrom/myimage.cue
+source/myimage.bin
+source/myimage.cue
