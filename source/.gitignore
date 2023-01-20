@@ -4,3 +4,6 @@
 *.ps-exe
 *.map
 *.orig
+*.bin
+*.cue
+*.exe
