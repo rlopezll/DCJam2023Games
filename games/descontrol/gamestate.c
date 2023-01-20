@@ -10,6 +10,10 @@
 #include "gameover.h"
 #include "intro.h"
 
+#ifndef TRACKS_MUSIC_OFFSET
+#define TRACKS_MUSIC_OFFSET 0
+#endif
+
 SGameState *CurrentGameState = NULL;
 extern SDC_Audio gAudio;
 
@@ -31,13 +35,13 @@ void GameState_ChangeGameState(enum EGameStates state)
     switch (state)
     {
     case AIRPORT_GAMESTATE:
-        dcAudio_MusicPlay(&gAudio, 1);
+        dcAudio_MusicPlay(&gAudio, TRACKS_MUSIC_OFFSET+1);
         break;
     case MAINMENU_GAMESTATE:
-        dcAudio_MusicPlay(&gAudio, 0);
+        dcAudio_MusicPlay(&gAudio, TRACKS_MUSIC_OFFSET+0);
         break;
     case GAMEOVER_GAMESTATE:
-        dcAudio_MusicPlay(&gAudio, 0);
+        dcAudio_MusicPlay(&gAudio, TRACKS_MUSIC_OFFSET+0);
         break;        
     case INTRO_GAMESTATE:
         break;

@@ -24,7 +24,7 @@ void GLGS_Init(FGameLoopGameState *GameState)
 
     if(GEngineInstance.CanPlayAudio)
     {
-        dcAudio_MusicPlay(GEngineInstance.AudioPtr, 1);
+        dcAudio_MusicPlay(GEngineInstance.AudioPtr, TRACKS_MUSIC_OFFSET+1);
     }
 
     int InitSpawnAmount = GameState->Contract.InitSpawnEnemies / TOTAL_ENEMIES;

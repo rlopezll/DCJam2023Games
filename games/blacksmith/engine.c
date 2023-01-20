@@ -32,7 +32,7 @@ void Init(Engine * EnginePtr)
     EnginePtr->CanPlayAudio = 0;
     dcAudio_Init(EnginePtr->AudioPtr, 16);
 
-    dcAudio_MusicPlay(EnginePtr->AudioPtr, 0);
+    dcAudio_MusicPlay(EnginePtr->AudioPtr, TRACKS_MUSIC_OFFSET+0);
 
     //  Resources.
     Resources_LoadFont();

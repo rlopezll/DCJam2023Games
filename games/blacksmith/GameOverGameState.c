@@ -14,7 +14,7 @@ void GOGS_Init(FGameOverGameState* GameState)
     
     if(GEngineInstance.CanPlayAudio)
     {
-        dcAudio_MusicPlay(GEngineInstance.AudioPtr, 0);
+        dcAudio_MusicPlay(GEngineInstance.AudioPtr, TRACKS_MUSIC_OFFSET+0);
     }
 }
 

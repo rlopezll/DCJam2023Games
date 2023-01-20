@@ -29,6 +29,10 @@
 #include "MenuGameState.h"
 #include "GameVictoryGameState.h"
 
+#ifndef TRACKS_MUSIC_OFFSET
+#define TRACKS_MUSIC_OFFSET 0
+#endif
+
 typedef enum
 {
     GS_UNDEFINED,

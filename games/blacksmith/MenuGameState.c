@@ -11,7 +11,7 @@ void MGS_Init(MenuGameState* MGSPtr)
     
     if(GEngineInstance.CanPlayAudio)
     {
-        dcAudio_MusicPlay(GEngineInstance.AudioPtr, 0);
+        dcAudio_MusicPlay(GEngineInstance.AudioPtr, TRACKS_MUSIC_OFFSET+0);
     }
 }
 

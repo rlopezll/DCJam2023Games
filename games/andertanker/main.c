@@ -37,6 +37,10 @@
 
 #define CUBESIZE 196 
 
+#ifndef TRACKS_MUSIC_OFFSET
+#define TRACKS_MUSIC_OFFSET 0
+#endif
+
 SDC_Audio Audio;
 SDC_Render Render;
 SDC_Render FirstPlayerRender;
@@ -317,7 +321,7 @@ int main(void)
     dcAudio_SfxLoad(&Audio, &MainLevel.FireSfx, (u_char *)_binary_data_Fire_vag_start);
     dcAudio_SfxLoad(&Audio, &MainLevel.MissSfx, (u_char *)_binary_data_Miss_vag_start);
 
-    dcAudio_MusicPlay(&Audio, 0);
+    dcAudio_MusicPlay(&Audio, TRACKS_MUSIC_OFFSET+0);
 
     dcFont_UseSystemFont();
     RotMatrix_gte(&MainLevel.LightAngle, &MainLevel.RotLight);

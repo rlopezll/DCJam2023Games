@@ -1,4 +1,4 @@
-rm myimage.iso
+rm myimage.bin
 rm myimage.cue
 copy ..\games\andertanker\MAIN.ps-exe cdrom\andertanker.exe
 copy ..\games\blacksmith\MAIN.ps-exe cdrom\blacksmith.exe

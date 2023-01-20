@@ -1,3 +1,7 @@
 env
 *.orig
 *.licensee.dat
+games/descontrol/cdrom/LICENSEE.DAT
+games/descontrol/cdrom/MAIN.EXE
+games/descontrol/cdrom/myimage.bin
+games/descontrol/cdrom/myimage.cue

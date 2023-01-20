@@ -107,7 +107,6 @@
 			<file name="SYSTEM.CNF"	type="data"	source="SYSTEM.CNF"/>
 			
 			<file name="MAIN.EXE"	type="data"	source="MAIN.EXE"/>
-
 			<file name="TANKE.EXE"	type="data"	source="andertanker.exe"/>
 			<file name="ROGUE.EXE"	type="data"	source="blacksmith.exe"/>
 			<file name="BARCO.EXE" 	type="data"	source="captain.exe"/>
@@ -163,5 +162,11 @@
 	</track>
 
 	-->
+	<track type="audio" source="tracks/track01.wav"/>
+	<track type="audio" source="tracks/track02.wav"/>
+	<track type="audio" source="tracks/track03.wav"/>
+	<track type="audio" source="tracks/track04.wav"/>
+	<track type="audio" source="tracks/track05.wav"/>
+	<track type="audio" source="tracks/track06.wav"/>
 	
 </iso_project>
