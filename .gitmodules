@@ -1,3 +1,4 @@
 [submodule "source/dcLibPsx"]
 	path = source/dcLibPsx
 	url = https://github.com/rlopezll/dcLibPsx.git
+	update = merge # <-- this is what you need to add
