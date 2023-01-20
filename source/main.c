@@ -14,17 +14,29 @@
 #include "dcMemory.h"
 #include "dcFont.h"
 #include "dcMisc.h"
+#include "dcAudio.h"
 
-#define WITH_CD 0
+//#define WITH_CD 0
 
 #ifndef WITH_CD
 #define WITH_CD 0
 #endif
 
+#ifndef TRACKS_MUSIC_OFFSET
+#define TRACKS_MUSIC_OFFSET 0
+#endif
+
+extern unsigned long _binary_assets_accept_vag_start[];
+extern unsigned long _binary_assets_select_vag_start[];
+
+SDC_Sfx       gAcceptSfx;
+SDC_Sfx       gSelectSfx;
+
+
 extern unsigned long _binary_assets_bgCropped_tim_start[];
 SDC_TIM_IMAGE backgroundTim;
 
-char* jamApps[] = { "cdrom:\\TANKE.EXE;1","cdrom:\\ROGUE.EXE;1","cdrom:\\BARCO.EXE;1", "cdrom:\\MALETA.EXE;1" };
+char* jamApps[] = { "\\TANKE.EXE;1","\\ROGUE.EXE;1","\\BARCO.EXE;1", "\\MALETA.EXE;1" };
 char* gameNames[] = 
 {
     "     ANDERTANKER     \0",
@@ -113,6 +125,7 @@ void drawBackground(SDC_Render *render)
 
 SDC_Render render;
 ELoaderState state;
+SDC_Audio audio;
 
 int main(void) 
 {
@@ -120,10 +133,6 @@ int main(void)
     dcMemory_Init();
     PadInit(0);
 
-    #if WITH_CD
-    _96_init();
-    #endif
-    
     int  width = 320;
     int  height = 240;
     CVECTOR bgColor = {14, 114, 120};
@@ -136,6 +145,13 @@ int main(void)
     InitCreditsLength();
 
     SetLoaderState(INTRO);
+
+    // Audio
+    dcAudio_Init(&audio, 16);
+    dcAudio_MusicPlay(&audio, TRACKS_MUSIC_OFFSET+0);
+
+    dcAudio_SfxLoad(&audio, &gAcceptSfx, (u_char *)_binary_assets_accept_vag_start);
+    dcAudio_SfxLoad(&audio, &gSelectSfx, (u_char *)_binary_assets_select_vag_start);
 
     while (1) 
     {
@@ -168,6 +184,7 @@ int main(void)
                 break;
         }
 
+        dcAudio_Update(&audio);
         dcRender_SwapBuffers(&render);
     }
 
@@ -191,6 +208,7 @@ void UpdateMenu()
         {
             selectedApp = DC_MAX( selectedApp - 1, 0);
             prevPadUp = 1;
+            dcAudio_SfxPlay(&gSelectSfx);
         }
     }
     else prevPadUp = 0;
@@ -201,6 +219,7 @@ void UpdateMenu()
         {
             selectedApp = DC_MIN( selectedApp + 1, numApps - 1);
             prevPadDown = 1;
+            dcAudio_SfxPlay(&gSelectSfx);
         }
     }
     else prevPadDown = 0;
@@ -209,6 +228,7 @@ void UpdateMenu()
     {
         if( !prevXDown )
         {
+            dcAudio_SfxPlay(&gAcceptSfx);
             prevXDown = 1;
             if( selectedApp == 4)
             {
@@ -216,18 +236,20 @@ void UpdateMenu()
             }
             else{
             #if WITH_CD
-                struct EXEC exec;
-                if(Load(jamApps[selectedApp], &exec))
+                struct EXEC* exec = CdReadExec(jamApps[selectedApp]);
+                if(exec)
                 {
                     printf("Loaded %s successfully!\n", jamApps[selectedApp]);
                     ResetGraph(3);
                     PadStop();
                     StopCallback();
                     EnterCriticalSection();
-                    Exec(&exec, 0, 0);
+                    Exec(exec, 0, 0);
                     ExitCriticalSection();
                 }
-                else printf("Failed to load %s!\n", jamApps[selectedApp]);
+                else {
+                    printf("Failed to load %s!\n", jamApps[selectedApp]);
+                }
             #endif
             }
         
@@ -275,6 +297,7 @@ void UpdateCredits()
         if(!prevXDown)
         {
             SetLoaderState(MENU);
+            dcAudio_SfxPlay(&gAcceptSfx);
         }
         prevXDown = 1;
     }

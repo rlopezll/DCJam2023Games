@@ -10,17 +10,22 @@ SRCS = main.c \
 		dcLibPsx/src/dcRender.c\
 		dcLibPsx/src/dcFont.c\
 		dcLibPsx/src/dcMisc.c\
+		dcLibPsx/src/dcAudio.c\
 		credits.c\
 		assets/bgCropped.tim\
+		assets/accept.vag\
+		assets/select.vag\
 
 CPPFLAGS += -I../third_party/common
 CPPFLAGS += -I../third_party/psyq/include
 CPPFLAGS += -I./dcLibPsx/include
+CPPFLAGS += -Wno-unused-variable
 LDFLAGS += -L../third_party/psyq/lib
 LDFLAGS += -Wl,--start-group
 LDFLAGS += -lapi
 LDFLAGS += -lc
 LDFLAGS += -lc2
+LDFLAGS += -lcd
 LDFLAGS += -lcard
 LDFLAGS += -lcomb
 LDFLAGS += -lds
